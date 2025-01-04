@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Mahjong Social Club | Lucky Tile Club</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Imbue:opsz,wght@10..100,400&family=Readex+Pro&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Sticky Header -->
+        <div class="sticky-header">
+            <div class="sticky-logo">
+                <a href="file:///Users/vivianlee/Desktop/lucky-tile-club/index.html"><img src="assets/ltc-logo-low-res.png" alt="Lucky Tile Club Logo"></a>
+            </div>
+            <div class="sticky-rsvp">
+                <!-- Add a base class and dynamic classes for light/dark styles -->
+                <button class="tile-button tile-button-light" onclick="openModal()">
+                    <div class="tile-shadow"></div>
+                    <div class="tile-face">
+                        <span class="tile-text">RSVP</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+    
+    
+    <!-- Scroll indicator -->
+    <div class="scroll-indicator">
+        <svg width="20" height="60" viewBox="0 0 24 60" fill="none" stroke="currentColor" stroke-width="1">
+            <path d="M12 5v50M5 48l7 7 7-7"/>
+        </svg>
+    </div>
+
+    <!-- Title section -->
+    <section class="title-section">
+        <div class="container">
+            <div class="word lucky">Lucky</div>
+            <div class="word tile">Tile</div>
+            <div class="word club">Club</div>
+        </div>
+    </section>
+
+    <!-- Info sections -->
+    <section class="info-section dark">
+        <p>We are a pop-up mahjong social club in Toronto</p>
+    </section>
+
+    <section class="info-section light">
+        <p>Created to bring community together over the majestic game of mahjong</p>
+    </section>
+
+    <section class="info-section dark">
+        <p>All levels welcome with coaches on-site</p>
+    </section>
+
+    <section class="info-section light">
+        <p>Bring some pals or make new ones</p>
+    </section>
+
+    <section class="info-section image-bg">
+        <p>Friday Jan 31 2025
+            <br>7-9pm<br><br>
+        <a href="https://maps.app.goo.gl/7i9pksAHuffZaS7w5" target="_blank" class="venue-link">Rooms | 17 Baldwin</a></p>
+    </section>
+
+    <section class="info-section dark">
+        <p><a href="https://instagram.com/luckytileclub" target="_blank">Instagram</a></p>
+        <br><br>
+        <p>&copy; RDVL Production 2025</p>
+    </section>
+
+    x<!-- Modal -->
+    <div class="modal" id="rsvpModal">
+        <div class="modal-content">
+            <div class="modal-inner">
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+                <h2>Reserve your seat</h2>
+                <p class="modal-description">
+                    Friday January 31, 7-9pm<br>
+                    Rooms Coffee | 17 Baldwin Street in Toronto<br>
+                    $10 per person (cash or e-transfer)
+                </p>
+                
+                <form id="rsvpForm" onsubmit="handleSubmit(event)">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="attendance">Skill level</label>
+                        <select id="attendance" name="attendance" required>
+                            <option value="">Please select...</option>
+                            <option value="Beginner">First timer (welcome!)</option>
+                            <option value="Novice">I've played, but I need a refresher</option>
+                            <option value="Regular">I can jump right in</option>
+                            <option value="Pro">I'm a pro</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="submit-btn">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="scripts.js"></script>
+    
+</body>
+</html>
