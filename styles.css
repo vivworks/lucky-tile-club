@@ -373,8 +373,18 @@ section.current {
         padding: 0.4rem 0.8rem;
     }
 
+    .lucky {
+        font-size: clamp(3rem, 15vw, 15rem);
+        margin-top: 15vh; /* Add some top margin for mobile */
+    }
+    
     .tile {
         -webkit-text-stroke: 1px #393839;
+    }
+    
+    .club {
+        font-size: clamp(3rem, 15vw, 15rem);
+        margin-bottom: 15vh; /* Add bottom margin to ensure visibility */
     }
     
     .info-section {
