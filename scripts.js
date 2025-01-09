@@ -20,29 +20,20 @@
         scrollIndicator = document.querySelector('.scroll-indicator');
         upArrow = document.querySelector('.up-arrow');
         updateTileButtonStyle();
+        initializeFormHandling();
         
         // Add click handlers for arrows
-    scrollIndicator?.addEventListener('click', () => {
-        if (currentIndex < sections.length - 1) {
-            animateSection(currentIndex + 1);
-        }
-    });
-    
-    upArrow?.addEventListener('click', () => {
-        if (currentIndex > 0) {
-            animateSection(currentIndex - 1);
-        }
-    });
-
-    // Update arrow visibility in animateSection
-    function updateArrows() {
-        if (scrollIndicator) {
-            scrollIndicator.style.opacity = currentIndex === sections.length - 1 ? '0' : '0.7';
-        }
-        if (upArrow) {
-            upArrow.style.opacity = currentIndex === 1 ? '0.7' : '0';
-        }
-    }
+        scrollIndicator?.addEventListener('click', () => {
+            if (currentIndex < sections.length - 1) {
+                animateSection(currentIndex + 1);
+            }
+        });
+        
+        upArrow?.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                animateSection(currentIndex - 1);
+            }
+        });
 
         // Make first section visible
         sections[0].style.visibility = 'visible';
@@ -56,16 +47,15 @@
         document.addEventListener('touchend', handleTouchEnd);
     });
 
+    // Scroll handling functions
     function handleScroll(event) {
         event.preventDefault();
         if (isAnimating) return;
 
-        // Add scroll throttling
         const now = Date.now();
         if (now - lastScrollTime < 150) return;
         lastScrollTime = now;
 
-        // Normalize wheel delta across browsers
         const delta = Math.abs(event.deltaY) >= 40 ? event.deltaY / 2 : (event.deltaY * 3);
         const direction = delta > 0 ? 1 : -1;
         const nextIndex = currentIndex + direction;
@@ -83,32 +73,26 @@
         const nextSection = sections[nextIndex];
         const isMovingDown = nextIndex > currentIndex;
 
-       // Make both sections visible and reset their transitions
         sections.forEach(section => {
-            section.style.transition = 'none';  // Remove transition temporarily
+            section.style.transition = 'none';
             section.style.visibility = 'hidden';
             section.style.zIndex = '1';
         });
 
-        // Set up initial positions without transition
         currentSection.style.visibility = 'visible';
         nextSection.style.visibility = 'visible';
         
         currentSection.style.transform = 'translateY(0)';
         nextSection.style.transform = `translateY(${isMovingDown ? '100%' : '-100%'})`;
 
-        // Force reflow
-        nextSection.offsetHeight;
+        nextSection.offsetHeight; // Force reflow
 
-        // Re-enable transitions
         currentSection.style.transition = 'transform 1170ms cubic-bezier(0.16, 1, 0.3, 1)';
         nextSection.style.transition = 'transform 1170ms cubic-bezier(0.16, 1, 0.3, 1)';
 
-        // Set z-index for proper stacking
         currentSection.style.zIndex = '1';
         nextSection.style.zIndex = '2';
 
-        // Animate
         requestAnimationFrame(() => {
             nextSection.style.transform = 'translateY(0)';
         });
@@ -126,7 +110,7 @@
     }
 
     function handleKeyboard(event) {
-        if (isAnimating) return;  // Prevent animation queueing
+        if (isAnimating) return;
         
         const nextIndex = (() => {
             switch(event.key) {
@@ -141,9 +125,8 @@
             }
         })();
 
-        // Check if next index is valid
         if (nextIndex >= 0 && nextIndex < sections.length) {
-            event.preventDefault();  // Prevent default scroll
+            event.preventDefault();
             animateSection(nextIndex);
         }
     }
@@ -170,9 +153,96 @@
         touchStartY = 0;
         touchEndY = 0;
     }
+
+    function updateTileButtonStyle() {
+        const tileButton = document.querySelector('.tile-button');
+        const currentSection = document.querySelector('section.current');
+
+        if (!tileButton || !currentSection) return;
+
+        if (currentSection.classList.contains('dark')) {
+            tileButton.classList.remove('tile-button-light');
+            tileButton.classList.add('tile-button-dark');
+        } else if (currentSection.classList.contains('light')) {
+            tileButton.classList.remove('tile-button-dark');
+            tileButton.classList.add('tile-button-light');
+        }
+    }
 })();
 
-// Modal handling - keeping these in global scope as they're called from HTML
+// Modal and form handling
+function initializeFormHandling() {
+    const form = document.getElementById("rsvpForm");
+    const result = document.getElementById("result");
+    
+    if (form) {
+        form.addEventListener("submit", handleFormSubmit);
+    }
+
+    // Close modal when clicking outside
+    const modal = document.getElementById('rsvpModal');
+    if (modal) {
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+    }
+}
+
+async function handleFormSubmit(e) {
+    e.preventDefault();
+    const form = e.target;
+    const submitButton = form.querySelector(".submit-btn");
+    const result = document.getElementById("result");
+    
+    submitButton.classList.add("loading");
+
+    const formData = new FormData(form);
+    const object = Object.fromEntries(formData);
+    const json = JSON.stringify(object);
+
+    try {
+        const response = await fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json"
+            },
+            body: json
+        });
+        
+        const jsonResponse = await response.json();
+
+        if (response.status === 200) {
+            result.classList.remove("error");
+            result.classList.add("success");
+            result.innerHTML = jsonResponse.message;
+            submitButton.classList.add("success");
+            
+            form.reset();
+            setTimeout(() => {
+                closeModal();
+                submitButton.classList.remove("loading", "success");
+                result.style.display = "none";
+            }, 3000);
+        } else {
+            console.log(response);
+            result.classList.remove("success");
+            result.classList.add("error");
+            result.innerHTML = jsonResponse.message;
+        }
+    } catch (error) {
+        console.log(error);
+        result.classList.remove("success");
+        result.classList.add("error");
+        result.innerHTML = "Something went wrong!";
+    } finally {
+        submitButton.classList.remove("loading");
+    }
+}
+
+// Modal control functions
 function openModal() {
     document.getElementById('rsvpModal').classList.add('active');
 }
@@ -181,48 +251,5 @@ function closeModal() {
     const modal = document.getElementById('rsvpModal');
     if (modal) {
         modal.classList.remove('active');
-    }
-}
-
-function handleSubmit(event) {
-    event.preventDefault();
-
-    const form = event.target;
-    const formData = new FormData(form);
-    
-    // Log form data (replace with your actual form submission logic)
-    console.log('Form submitted with data:', Object.fromEntries(formData));
-    
-    // Show success message
-    alert('RSVP submitted! Thank you for signing up.');
-
-    // Close modal and reset form
-    closeModal();
-    form.reset();
-}
-
-// Close modal when clicking outside
-document.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById('rsvpModal');
-    modal.addEventListener('click', (event) => {
-        if (event.target === modal) {
-            closeModal();
-        }
-    });
-});
-
-function updateTileButtonStyle() {
-    const tileButton = document.querySelector('.tile-button'); // Select the RSVP button
-    const currentSection = document.querySelector('section.current'); // Get the current section
-
-    if (!tileButton || !currentSection) return;
-
-    // Check the section's background class and update the button
-    if (currentSection.classList.contains('dark')) {
-        tileButton.classList.remove('tile-button-light');
-        tileButton.classList.add('tile-button-dark');
-    } else if (currentSection.classList.contains('light')) {
-        tileButton.classList.remove('tile-button-dark');
-        tileButton.classList.add('tile-button-light');
     }
 }

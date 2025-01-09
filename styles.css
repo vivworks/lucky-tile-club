@@ -351,6 +351,66 @@ section.current {
     opacity: 0.9;
 }
 
+/* Success/Error Message Styling */
+#result {
+    margin-top: 1rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-family: 'Readex Pro', sans-serif;
+    display: none;
+}
+
+#result.success {
+    display: block;
+    background-color: rgba(40, 167, 69, 0.1);
+    border: 1px solid #28a745;
+    color: #28a745;
+}
+
+#result.error {
+    display: block;
+    background-color: rgba(220, 53, 69, 0.1);
+    border: 1px solid #dc3545;
+    color: #dc3545;
+}
+
+/* Loading State for Submit Button */
+.submit-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.submit-btn span {
+    display: inline-block;
+    transition: all 0.2s ease;
+}
+
+.submit-btn .success {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+}
+
+.submit-btn .success svg {
+    width: 20px;
+    height: 20px;
+    fill: #f9f8d7;
+}
+
+.submit-btn.loading span {
+    visibility: hidden;
+    opacity: 0;
+}
+
+.submit-btn.success .success {
+    opacity: 1;
+    visibility: visible;
+}
+
 /* Media Queries */
 @media (max-width: 768px) {
     .sticky-header {

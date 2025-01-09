@@ -82,10 +82,10 @@
     <section class="info-section dark">
         <p><a href="https://instagram.com/luckytileclub" target="_blank">Instagram</a></p>
         <br><br>
-        <p>&copy; RDVL Production 2025</p>
+        <p>&copy; 2025 A RDVL Production</p>
     </section>
 
-    x<!-- Modal -->
+    <!-- Modal -->
     <div class="modal" id="rsvpModal">
         <div class="modal-content">
             <div class="modal-inner">
@@ -97,26 +97,47 @@
                     $10 per person (cash or e-transfer)
                 </p>
                 
-                <form id="rsvpForm" onsubmit="handleSubmit(event)">
+                <form action="https://api.web3forms.com/submit" method="POST" id="rsvpForm">
+                    <!-- Add your Web3Forms access key here -->
+                    <input type="hidden" name="access_key" value="fc31e11d-e5b9-40da-a700-5bc3adb84a6c">
+                    <input type="hidden" name="subject" value="New RSVP for Lucky Tile Club">
+                    <input type="hidden" name="from_name" value="Lucky Tile Club Website">
+                    
                     <div class="form-group">
                         <label for="name">Full Name</label>
                         <input type="text" id="name" name="name" required>
                     </div>
+                    
                     <div class="form-group">
                         <label for="email">Email</label>
                         <input type="email" id="email" name="email" required>
                     </div>
+                    
                     <div class="form-group">
-                        <label for="attendance">Skill level</label>
-                        <select id="attendance" name="attendance" required>
+                        <label for="skill_level">Skill level</label>
+                        <select id="skill_level" name="skill_level" required>
                             <option value="">Please select...</option>
-                            <option value="Beginner">First timer (welcome!)</option>
-                            <option value="Novice">I've played, but I need a refresher</option>
-                            <option value="Regular">I can jump right in</option>
+                            <option value="First timer">First timer (welcome!)</option>
+                            <option value="Needs refresher">I've played, but I need a refresher</option>
+                            <option value="Regular player">I can jump right in</option>
                             <option value="Pro">I'm a pro</option>
                         </select>
                     </div>
-                    <button type="submit" class="submit-btn">Submit</button>
+
+                    <!-- Optional but recommended -->
+                    <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+                    
+                    <!-- Success/Error messages -->
+                    <div id="result" class="mt-3"></div>
+
+                    <button type="submit" class="submit-btn">
+                        <span>Submit</span>
+                        <div class="success">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29.756 29.756" height="29.756" width="29.756">
+                                <path d="M29.049,5.009L28.19,4.151c-0.943-0.945-2.488-0.945-3.434,0L10.172,18.737l-5.175-5.173   c-0.943-0.944-2.489-0.944-3.432,0.001l-0.858,0.857c-0.943,0.944-0.943,2.489,0,3.433l7.744,7.752   c0.944,0.943,2.489,0.943,3.433,0L29.049,8.442C29.991,7.498,29.991,5.953,29.049,5.009z" />
+                            </svg>
+                        </div>
+                    </button>
                 </form>
             </div>
         </div>
