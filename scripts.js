@@ -1,4 +1,8 @@
 // Main IIFE to avoid polluting global scope
+function isModalOpen() {
+    const modal = document.getElementById('rsvpModal');
+    return modal && modal.classList.contains('active');
+}
 (function() {
     // State variables
     let currentIndex = 0;
@@ -49,17 +53,22 @@
 
     // Scroll handling functions
     function handleScroll(event) {
+        // Don't handle scroll events if modal is open
+        if (isModalOpen()) {
+            return;
+        }
+        
         event.preventDefault();
         if (isAnimating) return;
-
+    
         const now = Date.now();
         if (now - lastScrollTime < 150) return;
         lastScrollTime = now;
-
+    
         const delta = Math.abs(event.deltaY) >= 40 ? event.deltaY / 2 : (event.deltaY * 3);
         const direction = delta > 0 ? 1 : -1;
         const nextIndex = currentIndex + direction;
-
+    
         if (nextIndex >= 0 && nextIndex < sections.length) {
             animateSection(nextIndex);
         }
@@ -110,7 +119,7 @@
     }
 
     function handleKeyboard(event) {
-        if (isAnimating) return;
+        if (isModalOpen() || isAnimating) return;
         
         const nextIndex = (() => {
             switch(event.key) {
@@ -124,7 +133,7 @@
                     return currentIndex;
             }
         })();
-
+    
         if (nextIndex >= 0 && nextIndex < sections.length) {
             event.preventDefault();
             animateSection(nextIndex);
@@ -136,6 +145,10 @@
     }
 
     function handleTouchMove(event) {
+        // Don't prevent default behavior if modal is open
+        if (isModalOpen()) {
+            return;
+        }
         event.preventDefault();
         touchEndY = event.touches[0].clientY;
     }
@@ -252,4 +265,24 @@ function closeModal() {
     if (modal) {
         modal.classList.remove('active');
     }
+}
+
+// Close modal when clicking outside or on X button
+const modal = document.getElementById('rsvpModal');
+const closeBtn = document.querySelector('.close-btn');
+
+if (modal) {
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            closeModal();
+        }
+    });
+}
+
+if (closeBtn) {
+    closeBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        closeModal();
+    });
 }

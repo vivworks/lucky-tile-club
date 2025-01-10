@@ -191,7 +191,7 @@ section.current {
     height: 60px;
     z-index: 100;
     opacity: 0.7;
-    pointer-events: none;
+    cursor: pointer;
 }
 
 /* Link Styles */
@@ -253,38 +253,20 @@ section.current {
     max-width: 500px;
     width: 90%;
     margin: 20px;
-}
-
-/* Modal tile shadow */
-.modal-content::before {
-    content: '';
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    width: 100%;
-    height: 100%;
-    background-color: #393839;
-    border-radius: 4px;
-    z-index: -1;
-}
-
-/* Modal tile face */
-.modal-content::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #f9f8d7;
     border: 2px solid #393839;
     border-radius: 4px;
-    z-index: -1;
+    box-shadow: 4px 4px 0 #393839;
+    background: #f9f8d7;
+    transform: translate(-4px, -4px);
+}
+
+.modal-content::before,
+.modal-content::after {
+    display: none;
 }
 
 /* Modal inner content */
 .modal-inner {
-    position: relative;
     padding: 2rem;
     color: #393839;
     font-family: 'Readex Pro', sans-serif;
@@ -552,10 +534,14 @@ section.current {
 /* Dark version (light text, dark background) */
 .tile-button-dark .tile-face {
     background-color: #393839;
-    color: #f9f8d7;
     border: 2px solid #f9f8d7;
+}
+
+.tile-button-dark .tile-text {
+    color: #f9f8d7;
 }
 
 .tile-button-dark .tile-shadow {
     background-color: #f9f8d7;
+    opacity: 1 !important;
 }

@@ -12,7 +12,7 @@
 
 <body>
     <!-- simple password-->
-    <script>
+    <!-- <script>
         var password = "skifriends";  // Set your password here
         var userInput = prompt("Enter the password to access this site:");
       
@@ -20,7 +20,7 @@
           alert("Incorrect password!");
           window.location = "https://google.com";  // Redirect if incorrect
         }
-      </script>
+      </script> -->
 
 
     <!-- Sticky Header -->
@@ -74,14 +74,16 @@
     </section>
 
     <section class="info-section image-bg">
+        <p>The next mahjong night</p>
+        <br>
         <p>Friday Jan 31 2025
-            <br>7-9pm<br><br>
-        <a href="https://maps.app.goo.gl/7i9pksAHuffZaS7w5" target="_blank" class="venue-link">Rooms | 17 Baldwin</a></p>
+        <br>7-9pm<br><br>
+        <a href="https://www.instagram.com/17baldwinst/" target="_blank" class="venue-link">Rooms | 17 Baldwin</a>
     </section>
 
     <section class="info-section dark">
         <p><a href="https://instagram.com/luckytileclub" target="_blank">Instagram</a></p>
-        <br><br>
+        <br>
         <p>&copy; 2025 A RDVL Production</p>
     </section>
 
@@ -91,17 +93,17 @@
             <div class="modal-inner">
                 <button class="close-btn" onclick="closeModal()">&times;</button>
                 <h2>Reserve your seat</h2>
+                <br>
                 <p class="modal-description">
                     Friday January 31, 7-9pm<br>
-                    Rooms Coffee | 17 Baldwin Street in Toronto<br>
-                    $10 per person (cash or e-transfer)
+                    Rooms Coffee | 17 Baldwin Street, Toronto<br>
+                    $10 per person (cash or e-transfer)<br><br>
                 </p>
                 
                 <form action="https://api.web3forms.com/submit" method="POST" id="rsvpForm">
-                    <!-- Add your Web3Forms access key here -->
                     <input type="hidden" name="access_key" value="fc31e11d-e5b9-40da-a700-5bc3adb84a6c">
-                    <input type="hidden" name="subject" value="New RSVP for Lucky Tile Club">
-                    <input type="hidden" name="from_name" value="Lucky Tile Club Website">
+                    <input type="hidden" name="subject" value="New Lucky Tile Club RSVP">
+                    <input type="hidden" name="from_name" value="Lucky Tile Club - Jan 31 RSVP">
                     
                     <div class="form-group">
                         <label for="name">Full Name</label>
