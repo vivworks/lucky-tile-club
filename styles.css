@@ -162,25 +162,70 @@ section.current {
     gap: 20px;
 }
 
-.light {
-    background-color: #f9f8d7;
-    color: #393839;
-}
-
-.dark {
+.footer {
     background-color: #393839;
     color: #f9f8d7;
 }
 
-.image-bg {
+.section-1 {
     background: linear-gradient(
-        rgba(124, 124, 124, 0.85),
+        /* rgba(124, 124, 124, 0.85), */
+        rgba(57, 56, 57, 0.85),
         rgba(57, 56, 57, 0.85)
     ),
-    url('https://images.unsplash.com/photo-1643508522364-2724681026eb?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=mick-haupt-Z_nn8ngxAgY-unsplash.jpg')
+    url('assets/LTC-siteBG/LTC-Slide1.jpg')
     center / cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
+    color: #f9f8d7;
+}
+
+.section-2 {
+    background: linear-gradient(
+        rgba(57, 56, 57, 0.85),
+        rgba(57, 56, 57, 0.85)
+    ),
+    url('assets/LTC-siteBG/LTC-Slide2.jpg')
+    center / cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: #f9f8d7;
+}
+
+.section-3 {
+    background: linear-gradient(
+        rgba(57, 56, 57, 0.85),
+        rgba(57, 56, 57, 0.85)
+    ),
+    url('assets/LTC-siteBG/LTC-Slide3.jpg')
+    center / cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: #f9f8d7;
+}
+
+.section-4 {
+    background: linear-gradient(
+        rgba(57, 56, 57, 0.85),
+        rgba(57, 56, 57, 0.85)
+    ),
+    url('assets/LTC-siteBG/LTC-Slide4.jpg')
+    center / cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: #f9f8d7;
+}
+
+.section-5 {
+    background: linear-gradient(
+        rgba(57, 56, 57, 0.85),
+        rgba(57, 56, 57, 0.85)
+    ),
+    url('assets/LTC-siteBG/LTC-slide5.jpg')
+    center / cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: #f9f8d7;
 }
 
 .scroll-indicator {
