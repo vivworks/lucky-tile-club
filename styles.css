@@ -590,3 +590,7 @@ section.current {
     background-color: #f9f8d7;
     opacity: 1 !important;
 }
+
+.small-text {
+    font-size: 0.8rem;
+}
