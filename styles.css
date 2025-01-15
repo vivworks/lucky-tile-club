@@ -156,7 +156,7 @@ section.current {
     justify-content: center;
     text-align: center;
     padding: 2rem;
-    font-family: 'Readex Pro', sans-serif;
+    font-family: 'Imbue', serif;
     font-size: clamp(1.5rem, 5vw, 3rem);
     line-height: 1.4;
     gap: 20px;
