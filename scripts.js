@@ -169,13 +169,16 @@ function isModalOpen() {
 
     function updateTileButtonStyle() {
         const tileButton = document.querySelector('.tile-button');
+        const scrollIndicator = document.querySelector('.scroll-indicator');
         
         // Reset classes
         tileButton.classList.remove('in-info-section');
+        scrollIndicator.classList.remove('light');
         
-        // Add appropriate class based on current section
+        // Add appropriate classes based on current section
         if (currentIndex > 0) { // If we're not in the title section
             tileButton.classList.add('in-info-section');
+            scrollIndicator.classList.add('light');
         }
     }
 })();

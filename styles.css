@@ -247,6 +247,12 @@ section.current {
     z-index: 100;
     opacity: 0.7;
     cursor: pointer;
+    color: #393839;
+    transition: color 0.3s ease;
+}
+
+.scroll-indicator.light {
+    color: #f9f8d7;
 }
 
 /* Link Styles */
@@ -617,7 +623,6 @@ section.current {
 
 .tile-button.in-info-section .tile-shadow {
     background-color: #f9f8d7;
-    /* opacity: 0.5; */
 }
 
 .tile-button.in-info-section .tile-face {
