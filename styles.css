@@ -54,6 +54,16 @@ html, body {
     background-color: #f9f8d7;
 }
 
+/* Add dark shadow for title section */
+.title-section .rsvp-button {
+    box-shadow: 4px 4px 0 #393839;
+}
+
+/* Add light shadow for other sections */
+section:not(.title-section) .rsvp-button {
+    box-shadow: 4px 4px 0 rgba(249, 248, 215, 0.5);
+}
+
 .rsvp-button:hover {
     background-color: #393839;
     color: #f9f8d7 !important;
@@ -361,6 +371,17 @@ section.current {
     box-shadow: 0 0 0 2px rgba(57, 56, 57, 0.1);
 }
 
+.form-group input[type="text"]#invite_code {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Readex Pro', sans-serif;
+}
+
+.form-group input[type="text"]#invite_code::placeholder {
+    text-transform: none;
+    letter-spacing: normal;
+}
+
 /* Keep your existing submit button styles */
 .submit-btn {
     background: #393839;
@@ -512,6 +533,7 @@ section.current {
     align-items: center;
     justify-content: center;
     z-index: 2;
+    transition: none;
 }
 
 .tile-shadow {
@@ -523,6 +545,7 @@ section.current {
     background-color: #393839;
     border-radius: 4px;
     z-index: 1;
+    transition: none;
 }
 
 .tile-symbol {
@@ -563,6 +586,7 @@ section.current {
     color: #393839;
     text-decoration: none;
     margin-top: 5px;
+    transition: none;
 }
 
 /* Light version (dark text, light background) */
@@ -589,6 +613,20 @@ section.current {
 .tile-button-dark .tile-shadow {
     background-color: #f9f8d7;
     opacity: 1 !important;
+}
+
+.tile-button.in-info-section .tile-shadow {
+    background-color: #f9f8d7;
+    /* opacity: 0.5; */
+}
+
+.tile-button.in-info-section .tile-face {
+    background-color: #f9f8d7;
+    border-color: #393839;
+}
+
+.tile-button.in-info-section .tile-text {
+    color: #393839;
 }
 
 .small-text {

@@ -169,16 +169,13 @@ function isModalOpen() {
 
     function updateTileButtonStyle() {
         const tileButton = document.querySelector('.tile-button');
-        const currentSection = document.querySelector('section.current');
-
-        if (!tileButton || !currentSection) return;
-
-        if (currentSection.classList.contains('dark')) {
-            tileButton.classList.remove('tile-button-light');
-            tileButton.classList.add('tile-button-dark');
-        } else if (currentSection.classList.contains('light')) {
-            tileButton.classList.remove('tile-button-dark');
-            tileButton.classList.add('tile-button-light');
+        
+        // Reset classes
+        tileButton.classList.remove('in-info-section');
+        
+        // Add appropriate class based on current section
+        if (currentIndex > 0) { // If we're not in the title section
+            tileButton.classList.add('in-info-section');
         }
     }
 })();
