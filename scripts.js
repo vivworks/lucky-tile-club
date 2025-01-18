@@ -3,6 +3,7 @@ function isModalOpen() {
     const modal = document.getElementById('rsvpModal');
     return modal && modal.classList.contains('active');
 }
+
 (function() {
     // State variables
     let currentIndex = 0;
@@ -13,6 +14,7 @@ function isModalOpen() {
     let sections;
     let scrollIndicator;
     let upArrow;
+    let isLinkClick = false; // New flag to track link clicks
 
     // Constants
     const ANIMATION_DURATION = 1170;
@@ -49,12 +51,19 @@ function isModalOpen() {
         document.addEventListener('touchstart', handleTouchStart, { passive: true });
         document.addEventListener('touchmove', handleTouchMove, { passive: false });
         document.addEventListener('touchend', handleTouchEnd);
+
+        // Add click handler for links
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('a')) {
+                isLinkClick = true;
+            }
+        }, true); // Use capture phase
     });
 
     // Scroll handling functions
     function handleScroll(event) {
-        // Don't handle scroll events if modal is open
-        if (isModalOpen()) {
+        // Don't handle scroll if modal is open or if it's a link click
+        if (isModalOpen() || isLinkClick) {
             return;
         }
         
@@ -74,6 +83,41 @@ function isModalOpen() {
         }
     }
 
+    function handleTouchStart(event) {
+        // Reset link click flag
+        isLinkClick = false;
+        touchStartY = event.touches[0].clientY;
+    }
+
+    function handleTouchMove(event) {
+        // Check if we're touching a link or if modal is open
+        if (isModalOpen() || event.target.closest('a') || isLinkClick) {
+            return;
+        }
+        event.preventDefault();
+        touchEndY = event.touches[0].clientY;
+    }
+
+    function handleTouchEnd() {
+        // Don't handle touch end if it was a link click
+        if (isLinkClick) {
+            return;
+        }
+
+        const swipeDistance = touchEndY - touchStartY;
+        
+        if (Math.abs(swipeDistance) > MIN_SWIPE_DISTANCE) {
+            handleScroll({
+                deltaY: swipeDistance * -1,
+                preventDefault: () => {}
+            });
+        }
+        
+        touchStartY = 0;
+        touchEndY = 0;
+    }
+
+    // Rest of the code remains the same...
     function animateSection(nextIndex) {
         if (isAnimating) return;
         isAnimating = true;
@@ -119,7 +163,7 @@ function isModalOpen() {
     }
 
     function handleKeyboard(event) {
-        if (isModalOpen() || isAnimating) return;
+        if (isModalOpen() || isAnimating || isLinkClick) return;
         
         const nextIndex = (() => {
             switch(event.key) {
@@ -140,45 +184,18 @@ function isModalOpen() {
         }
     }
 
-    function handleTouchStart(event) {
-        touchStartY = event.touches[0].clientY;
-    }
-
-    function handleTouchMove(event) {
-        // Don't prevent default behavior if modal is open
-        if (isModalOpen()) {
-            return;
-        }
-        event.preventDefault();
-        touchEndY = event.touches[0].clientY;
-    }
-
-    function handleTouchEnd() {
-        const swipeDistance = touchEndY - touchStartY;
-        
-        if (Math.abs(swipeDistance) > MIN_SWIPE_DISTANCE) {
-            handleScroll({
-                deltaY: swipeDistance * -1,
-                preventDefault: () => {}
-            });
-        }
-        
-        touchStartY = 0;
-        touchEndY = 0;
-    }
-
     function updateTileButtonStyle() {
         const tileButton = document.querySelector('.tile-button');
         const scrollIndicator = document.querySelector('.scroll-indicator');
         
         // Reset classes
-        tileButton.classList.remove('in-info-section');
-        scrollIndicator.classList.remove('light');
+        tileButton?.classList.remove('in-info-section');
+        scrollIndicator?.classList.remove('light');
         
         // Add appropriate classes based on current section
-        if (currentIndex > 0) { // If we're not in the title section
-            tileButton.classList.add('in-info-section');
-            scrollIndicator.classList.add('light');
+        if (currentIndex > 0) {
+            tileButton?.classList.add('in-info-section');
+            scrollIndicator?.classList.add('light');
         }
     }
 })();
