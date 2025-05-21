@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucky Tile Club - RSVP</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        button { background-color: #4CAF50; color: white; padding: 10px 15px; border: none; 
+                border-radius: 4px; cursor: pointer; }
+        .hidden { display: none; }
+        #message { padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .error { color: red; }
+        .success { color: green; }
+        #loading { margin: 20px 0; }
+        #debug-panel { background: #f8f8f8; padding: 10px; margin-top: 20px; border: 1px solid #ddd; }
+        #log { max-height: 200px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Lucky Tile Club - RSVP</h1>
+        
+        <div id="loading">Loading event information...</div>
+        
+        <div id="event-info" class="hidden">
+            <h2 id="event-name">Monthly Mahjong Session</h2>
+            <p id="event-date-container">Date: <span id="event-date">TBD</span></p>
+            <p>Available spots: <span id="available-count">?</span> / <span id="total-count">?</span></p>
+        </div>
+        
+        <form id="rsvp-form" class="hidden">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="booking-type">Booking:</label>
+                <select id="booking-type" required>
+                    <option value="">-- Select --</option>
+                    <option value="seat">A seat (1 person)</option>
+                    <option value="table">A table (4 people)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="skill-level">Skill Level:</label>
+                <select id="skill-level" required>
+                    <option value="">-- Select --</option>
+                    <option value="first-time">First time!</option>
+                    <option value="refresher">Need a refresher</option>
+                    <option value="confident">Pretty confident</option>
+                    <option value="pro">Pro</option>
+                </select>
+            </div>
+            
+            <button type="submit">Submit RSVP</button>
+        </form>
+        
+        <div id="message" class="hidden"></div>
+        
+        <!-- Debug Panel for Development -->
+        <div id="debug-panel">
+            <h3>Debug Panel</h3>
+            <div id="log"></div>
+        </div>
+    </div>
+
+    <script>
+        // API endpoint (local Node.js server)
+        const API_URL = 'http://localhost:3000/api';
+        
+        // Global variables
+        let totalCapacity = 0;
+        let availableSpots = 0;
+        
+        // Simple logging function
+        function log(message) {
+            const logElem = document.getElementById('log');
+            if (logElem) {
+                const timestamp = new Date().toLocaleTimeString();
+                logElem.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+                logElem.scrollTop = logElem.scrollHeight;
+            }
+            console.log(message);
+        }
+        
+        // Show message to user
+        function showMessage(message, isError = false) {
+            const messageElem = document.getElementById('message');
+            if (messageElem) {
+                messageElem.textContent = message;
+                messageElem.className = isError ? 'error' : 'success';
+                messageElem.classList.remove('hidden');
+            }
+        }
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            log('Page loaded, fetching event information');
+            fetchEventInfo();
+            
+            document.getElementById('rsvp-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                submitRSVP();
+            });
+            
+            document.getElementById('booking-type').addEventListener('change', updateBookingMessage);
+        });
+        
+        // Fetch event information
+        function fetchEventInfo() {
+            fetch(`${API_URL}/event`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch event information');
+                    }
+                    return response.json();
+                })
+                .then(eventData => {
+                    log(`Event data received: ${JSON.stringify(eventData)}`);
+                    
+                    // Update event info
+                    document.getElementById('event-name').textContent = eventData.name || 'Untitled Event';
+                    
+                    // Update event date if available
+                    if (eventData.date) {
+                        document.getElementById('event-date').textContent = formatDate(eventData.date);
+                    } else {
+                        document.getElementById('event-date-container').classList.add('hidden');
+                    }
+                    
+                    // Set total capacity
+                    totalCapacity = eventData.maxCapacity;
+                    document.getElementById('total-count').textContent = totalCapacity;
+                    
+                    // Now fetch RSVPs to calculate available spots
+                    fetchRSVPs();
+                })
+                .catch(error => {
+                    log(`Error fetching event: ${error.message}`);
+                    showMessage('Unable to load event information. Please try again later.', true);
+                    document.getElementById('loading').textContent = 'Error loading event information.';
+                });
+        }
+        
+        // Fetch RSVPs for the event
+        function fetchRSVPs() {
+            fetch(`${API_URL}/rsvps`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch RSVPs');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    log(`RSVPs received: ${data.rsvps.length}, Spots taken: ${data.spotsTaken}`);
+                    
+                    // Calculate available spots
+                    availableSpots = Math.max(0, totalCapacity - data.spotsTaken);
+                    document.getElementById('available-count').textContent = availableSpots;
+                    
+                    // Show appropriate UI
+                    document.getElementById('loading').classList.add('hidden');
+                    document.getElementById('event-info').classList.remove('hidden');
+                    
+                    if (availableSpots > 0) {
+                        document.getElementById('rsvp-form').classList.remove('hidden');
+                    } else {
+                        showMessage('Sorry, this event is full. Please check back later for future events.', true);
+                    }
+                })
+                .catch(error => {
+                    log(`Error fetching RSVPs: ${error.message}`);
+                    showMessage('Unable to check available spots. Please try again later.', true);
+                    document.getElementById('loading').textContent = 'Error loading event information.';
+                });
+        }
+        
+        // Submit RSVP form
+        function submitRSVP() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const bookingType = document.getElementById('booking-type').value;
+            const skillLevel = document.getElementById('skill-level').value;
+            
+            // Validate form
+            if (!name || !email || !bookingType || !skillLevel) {
+                showMessage('Please fill out all fields.', true);
+                return;
+            }
+            
+            // Check if enough spots available
+            const spotsNeeded = bookingType === 'table' ? 4 : 1;
+            if (spotsNeeded > availableSpots) {
+                showMessage(`Sorry, not enough spots available for a ${bookingType} booking.`, true);
+                return;
+            }
+            
+            // Show submitting message
+            showMessage('Submitting your RSVP...');
+            
+            // Submit to server
+            fetch(`${API_URL}/rsvp`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name,
+                    email,
+                    bookingType,
+                    skillLevel
+                }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to submit RSVP');
+                }
+                return response.json();
+            })
+            .then(data => {
+                log(`RSVP created successfully: ${JSON.stringify(data)}`);
+                showMessage('Thank you! Your RSVP has been submitted successfully.');
+                document.getElementById('rsvp-form').reset();
+                
+                // Update spots after successful RSVP
+                const spotsNeeded = bookingType === 'table' ? 4 : 1;
+                availableSpots -= spotsNeeded;
+                document.getElementById('available-count').textContent = availableSpots;
+                
+                // If no spots left, hide the form
+                if (availableSpots <= 0) {
+                    document.getElementById('rsvp-form').classList.add('hidden');
+                    showMessage('Thanks for your RSVP! The event is now full.', false);
+                }
+            })
+            .catch(error => {
+                log(`Error submitting RSVP: ${error.message}`);
+                showMessage('Error submitting RSVP. Please try again later.', true);
+            });
+        }
+        
+        // Update booking message based on selection
+        function updateBookingMessage() {
+            const bookingType = document.getElementById('booking-type').value;
+            if (bookingType === 'table' && availableSpots < 4) {
+                showMessage(`Note: A table booking requires 4 spots, but there are only ${availableSpots} available.`, true);
+            } else {
+                document.getElementById('message').classList.add('hidden');
+            }
+        }
+        
+        // Helper function to format date
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            try {
+                const date = new Date(dateStr);
+                return date.toLocaleDateString('en-US', { 
+                    weekday: 'short',
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+            } catch (error) {
+                log(`Error formatting date: ${error.message}`);
+                return dateStr;
+            }
+        }
+    </script>
+</body>
+</html>
